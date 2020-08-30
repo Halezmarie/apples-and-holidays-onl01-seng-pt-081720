@@ -1,43 +1,48 @@
-def second_supply_for_fourth_of_july(supplies_hash)
-  supplies_hash[:summer][:fourth_of_july][1]
+require 'pry'
+
+def second_supply_for_fourth_of_july(holiday_hash)
+  holiday_hash[:summer][:fourth_of_july][1]
 end
 
-def add_supply_to_winter_holidays(supplies_hash, supply)
-  supplies_hash[:winter].each do |holiday, supplies|
-    supplies << supply
-  end
+def add_supply_to_winter_holidays(holiday_hash, supply)
+  holiday_hash[:winter][:christmas].push(supply)
+  holiday_hash[:winter][:new_years].push(supply)
+end
+ 
+
+def add_supply_to_memorial_day(holiday_hash, supply)
+  holiday_hash[:spring][:memorial_day].push(supply)
 end
 
-
-def add_supply_to_memorial_day(supplies_hash, supply)
-  supplies_hash[:spring][:memorial_day] << supply
+def add_new_holiday_with_supplies(holiday_hash, season, holiday_name, supply_array)
+  holiday_hash[season][holiday_name] = supply_array
+  holiday_hash
 end
 
-def add_new_holiday_with_supplies(supplies_hash, season, new_holiday_name, supplies_list)
-  supplies_hash[season][new_holiday_name] = supplies_list
-  supplies_hash
-
+def all_winter_holiday_supplies(holiday_hash)
+  holiday_hash[:winter].values.flatten
 end
 
-def all_winter_holiday_supplies(supplies_hash)
-  holiday_supplies[:winter].map do |holiday, supplies|
-    supplies
-  end.flatten
-end
-
-def all_supplies_in_holidays(supplies_hash)
-  holiday_supplies.each do |season, holidays|
-    puts "#{season.capitalize}:"
-    holidays.each do |holiday, supplies|
-      puts"  #{holiday.to_s.split('_').map {|w| w.capitalize }.join(' ') }: #{supplies.join(", ")}"
+def all_supplies_in_holidays(holiday_hash)
+  holiday_hash.each do |season, specific_holidays|
+    new_season = season[0].upcase + season[1..-1]
+    puts "#{new_season}:"
+    specific_holidays.each do |holiday, props|
+      new_holiday = holiday.to_s.split("_").map do |word|
+        word[0].upcase + word[1..-1]
+      end.join(" ")
+      new_props = props.join(", ")
+      puts "  #{new_holiday}: #{new_props}"
     end
   end
 end
 
-def all_holidays_with_bbq(supplies_hash)
-  supplies_hash.map do |season, holidays|
-    holidays.map do |holiday, supplies|
-      holiday if supplies.include?("BBQ")
+def all_holidays_with_bbq(holiday_hash)
+  bbq_holidays = []
+  holiday_hash.each do |season, holiday_names|
+    holiday_names.each do |holiday, props|
+      bbq_holidays << holiday if props.include?("BBQ")
     end
-  end.flatten.compact
+  end
+  bbq_holidays
 end
